@@ -1,0 +1,42 @@
+CentOS编译BTS节点程序及命令行钱包
+
+1. 环境准备：
+    独立服务器或VPS
+     8G 内存（更多更好）
+     100 G硬盘
+     64位 CentOS 7.4 (推荐)
+
+2. 如未安装 Boost 库需先编译安装：(请注意，目前只支持 1.57.0 到 1.60.0 的 Boost 库)
+   2.1 安装依赖
+          yum install bzip2-devel libdb-devel readline-devel libicu-devel python-devel gcc-c++  
+
+   2.2 编译Boost 1.57.0  
+          wget -c 'http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.bz2/download' -O boost_1_57_0.tar.bz2
+          tar xjf boost_1_57_0.tar.bz2
+          cd boost_1_57_0
+          ./bootstrap.sh
+          ./b2 install
+
+3. 编译比特股节点程序及命令行钱包
+    3.1 安装依赖
+           yum install autoconf cmake git boost-devel libcurl-devel doxygen gcc-c++ openssl-devel
+           yum groupinstall "Development Tools"
+
+     3.2 编译比特股源码
+            git clone https://github.com/bitshares/bitshares-core.git
+            cd bitshares-core
+            git checkout <LATEST_RELEASE_TAG>
+            git submodule update --init --recursive
+            mkdir build
+            cd build
+            cmake -DCMAKE_BUILD_TYPE=Release .
+            make witness_node cli_wallet
+
+          注：上述步骤中，请将 <LATEST_RELEASE_TAG> 替换成最新发布版本号
+           编译完成后，得到两个可执行程序分别是：
+           * build/programs/witness_node/witness_node
+           * build/programs/cli_wallet/cli_wallet
+           上述程序可以拷贝到其他目录或者其他服务器执行。
+
+
+* 注意：直接复制本文档中命令到服务器上运行时，可能由于字符编码关系会出现问题。比如 直接复制yum命令安装依赖时，可能会出现漏掉的情况，请注意检查。
